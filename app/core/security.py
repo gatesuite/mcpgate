@@ -1,10 +1,7 @@
 import secrets
-import string
 import hashlib
 import bcrypt
-from passlib.context import CryptContext
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def _prehash(key: str) -> str:
     """Pre-hash with SHA256 to ensure the length is always 64 chars."""
@@ -21,19 +18,15 @@ def generate_api_key(prefix: str = "mcp_sk_") -> tuple[str, str, str]:
     secret = secrets.token_urlsafe(32)    # ~43 chars
     
     plain_text_key = f"{prefix}{public_id}_{secret}"
-    
-    # Let's bypass passlib ENTIRELY for hashing to avoid the bug
+
     salt = bcrypt.gensalt()
     hashed_key_bytes = bcrypt.hashpw(plain_text_key.encode('utf-8'), salt)
     hashed_key = hashed_key_bytes.decode('utf-8')
-    
+
     return plain_text_key, hashed_key, public_id
 
 def verify_api_key(plain_text_key: str, hashed_key: str) -> bool:
-    """
-    Verifies a plain text key against a hash.
-    """
-    # Bypass passlib ENTIRELY for verifying to avoid the bug
+    """Verify a plain text key against a bcrypt hash."""
     return bcrypt.checkpw(plain_text_key.encode('utf-8'), hashed_key.encode('utf-8'))
 
 def get_prefix_display(plain_text_key: str) -> str:

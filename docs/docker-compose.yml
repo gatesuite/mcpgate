@@ -1,0 +1,19 @@
+# Local dev server for the docs site.
+# Runs Astro/Starlight inside a Node container — no local Node install needed.
+#
+# Usage from the repo root: make docs-up       (then open http://localhost:4321/mcpgate/)
+# Or from this dir:         docker compose up
+
+services:
+  docs:
+    image: node:22-alpine
+    working_dir: /app
+    ports:
+      - "4321:4321"
+    volumes:
+      - ./:/app
+      - docs-node-modules:/app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+volumes:
+  docs-node-modules:

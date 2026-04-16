@@ -1,0 +1,99 @@
+---
+title: MCPGate
+description: Ultra-fast API key lifecycle and verification service for MCP servers and AI agents — deploy as a sidecar, secure your AI infrastructure in minutes.
+template: splash
+hero:
+  tagline: API key lifecycle management built for AI. Issue, verify, and revoke keys for MCP servers and AI agents with a single lightweight service.
+  image:
+    file: ../../assets/logo.svg
+  actions:
+    - text: Quick Start
+      link: /mcpgate/quickstart/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/gatesuite/mcpgate
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why MCPGate?
+
+Modern AI applications need machine-to-machine authentication. OAuth is designed for humans — MCPGate is designed for agents.
+
+| Solution | Problem |
+|----------|---------|
+| **Roll your own** | Bcrypt limits, key parsing bugs, no audit trail |
+| **API Gateway (Kong, etc.)** | Heavy, expensive, complex config for a simple use case |
+| **OAuth tokens** | Designed for human login flows, not machine clients |
+| **Static secrets** | No rotation, no scopes, no revocation, no audit |
+
+**MCPGate fills the gap** — a purpose-built API key service with Stripe-style keys, bcrypt storage, O(1) verification, and a ~50MB container.
+
+## Features
+
+<CardGrid>
+  <Card title="Stripe-style keys" icon="seti:lock">
+    Human-readable format: `mcp_sk_<id>_<secret>`. The public ID is embedded in the key for O(1) database lookups — no full table scans.
+  </Card>
+  <Card title="Cryptographically secure" icon="approve-check-circle">
+    Keys are SHA-256 pre-hashed then bcrypt-stored. The plain-text key is shown once at creation and never stored.
+  </Card>
+  <Card title="Sub-millisecond verify" icon="rocket">
+    The `/verify` endpoint extracts the public ID from the key, does a single indexed DB lookup, then runs bcrypt — fast enough for every MCP request.
+  </Card>
+  <Card title="Scopes & expiry" icon="setting">
+    Attach arbitrary JSON scopes to any key. Set optional expiry dates. Soft and hard revocation both supported.
+  </Card>
+  <Card title="Kubernetes-ready" icon="puzzle">
+    Helm chart with HPA, PDB, health checks, non-root user, read-only filesystem, topology spread constraints.
+  </Card>
+  <Card title="Drop-in sidecar" icon="download">
+    Runs alongside any existing auth provider (Auth0, Clerk, Firebase). Handles machine auth so your OAuth handles human auth.
+  </Card>
+</CardGrid>
+
+## Get started in 3 steps
+
+<CardGrid>
+  <Card title="1. Deploy" icon="download">
+    ```bash
+    curl -O https://raw.githubusercontent.com/gatesuite/mcpgate/main/docker-compose.yml
+    export ADMIN_API_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+    docker compose up -d
+    ```
+  </Card>
+  <Card title="2. Create a key" icon="pencil">
+    ```bash
+    curl -X POST http://localhost:8000/api/v1/keys \
+      -H "Authorization: Bearer $ADMIN_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"user_id": "user_123", "name": "Claude Desktop"}'
+    ```
+  </Card>
+  <Card title="3. Verify on every request" icon="rocket">
+    ```bash
+    curl -X POST http://localhost:8000/api/v1/verify \
+      -H "Content-Type: application/json" \
+      -d '{"key": "mcp_sk_..."}'
+    # → {"valid": true, "user_id": "user_123", "scopes": null}
+    ```
+  </Card>
+</CardGrid>
+
+## MCPGate vs a custom implementation
+
+A common path is to roll your own key service. Here's what you get with MCPGate instead:
+
+| | **MCPGate** | **DIY** |
+|---|---|---|
+| **Key format** | `mcp_sk_<id>_<secret>` — scannable, unambiguous | Whatever you build |
+| **Storage** | SHA-256 pre-hash + bcrypt — correct by default | Easy to get wrong (truncation bugs, plain-text leaks) |
+| **Lookup speed** | O(1) — public ID indexed in DB | Often O(n) — full table scan |
+| **Scopes** | JSON blob on every key | Requires extra schema work |
+| **Expiry** | Built-in, checked on every verify | Often forgotten |
+| **Revocation** | Hard delete via API | Varies |
+| **Audit trail** | `last_used_at` updated on every verify | Requires extra work |
+| **Deployment** | Single container, Helm chart included | You build it |

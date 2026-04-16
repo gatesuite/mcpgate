@@ -1,0 +1,130 @@
+/* GitHub Primer-inspired theme for MCPGate docs.
+   Follows Starlight's convention:
+   - :root holds DARK mode defaults
+   - [data-theme='light'] overrides for LIGHT mode
+   - --sl-color-white is SEMANTIC ("foreground"), --sl-color-black is SEMANTIC ("background")
+     → they swap values between modes
+   - gray scale: gray-1 = lightest in dark / darkest in light (inverted between modes)
+*/
+
+/* ── Dark mode (default :root, matches GitHub dark) ───────────── */
+:root {
+  --sl-color-white: hsl(0, 0%, 100%);   /* semantic foreground (literal white) */
+  --sl-color-black: #0d1117;            /* semantic background (dark) */
+
+  /* gray-1 = lightest, gray-6 = darkest in dark mode */
+  --sl-color-gray-1: #e6edf3;
+  --sl-color-gray-2: #b1bac4;
+  --sl-color-gray-3: #9198a1;
+  --sl-color-gray-4: #6e7681;
+  --sl-color-gray-5: #30363d;
+  --sl-color-gray-6: #161b22;
+
+  --sl-color-accent-low: #0c2d6b;
+  --sl-color-accent: #4493f8;
+  --sl-color-accent-high: #79c0ff;
+
+  --sl-color-bg: #0d1117;
+  --sl-color-bg-nav: #010409;
+  --sl-color-bg-sidebar: #010409;
+  --sl-color-bg-inline-code: #2f2e33;
+
+  --sl-color-text: #e6edf3;
+  --sl-color-text-accent: #4493f8;
+  --sl-color-text-invert: #0d1117;
+
+  --sl-color-hairline-light: #21262d;
+  --sl-color-hairline: #30363d;
+  --sl-color-hairline-shade: #30363d;
+
+  --sl-shadow-sm: 0 0 transparent;
+  --sl-shadow-md: 0 3px 6px #010409;
+  --sl-shadow-lg: 0 8px 24px #010409;
+}
+
+/* ── Light mode override (matches GitHub light) ───────────────── */
+:root[data-theme='light'] {
+  --sl-color-white: #1f2328;            /* semantic foreground (DARK in light mode!) */
+  --sl-color-black: #ffffff;            /* semantic background (WHITE in light mode!) */
+
+  /* gray-1 = darkest, gray-7 = lightest in light mode */
+  --sl-color-gray-1: #1f2328;
+  --sl-color-gray-2: #424a53;
+  --sl-color-gray-3: #656d76;
+  --sl-color-gray-4: #9198a1;
+  --sl-color-gray-5: #d1d9e0;
+  --sl-color-gray-6: #eaeef2;
+  --sl-color-gray-7: #f6f8fa;
+
+  --sl-color-accent-low: #ddf4ff;
+  --sl-color-accent: #0969da;
+  --sl-color-accent-high: #0550ae;
+
+  --sl-color-bg: #ffffff;
+  --sl-color-bg-nav: #f6f8fa;
+  --sl-color-bg-sidebar: #f6f8fa;
+  --sl-color-bg-inline-code: #f6f8fa;
+
+  --sl-color-text: #424a53;
+  --sl-color-text-accent: #0969da;
+  --sl-color-text-invert: #ffffff;
+
+  --sl-color-hairline-light: #eaeef2;
+  --sl-color-hairline: #d1d9e0;
+  --sl-color-hairline-shade: #656d76;
+
+  --sl-shadow-sm: 0 1px 0 rgba(31, 35, 40, 0.04);
+  --sl-shadow-md: 0 3px 6px rgba(140, 149, 159, 0.15);
+  --sl-shadow-lg: 0 8px 24px rgba(140, 149, 159, 0.2);
+}
+
+/* ── Typography polish ────────────────────────────────────────── */
+:root {
+  --sl-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
+    Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --sl-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  --sl-content-width: min(67rem, 100vw - 2rem);
+  --sl-content-margin-inline: auto;
+}
+
+[data-has-sidebar][data-has-toc] {
+  --sl-content-margin-inline: auto;
+}
+
+/* Code blocks — GitHub-esque */
+.expressive-code .frame {
+  border-radius: 6px;
+  border: 1px solid var(--sl-color-hairline);
+}
+
+/* Tidy tables */
+table {
+  border-collapse: collapse;
+}
+table th,
+table td {
+  border: 1px solid var(--sl-color-hairline);
+  padding: 0.5rem 0.875rem;
+}
+table th {
+  background: var(--sl-color-gray-6);
+  text-align: left;
+}
+:root[data-theme='light'] table th {
+  background: var(--sl-color-gray-7);
+}
+
+/* ── Header: center the search bar in the viewport ────────────── */
+@media (min-width: 50rem) {
+  header .header {
+    grid-template-columns: 1fr minmax(20rem, 28rem) 1fr !important;
+  }
+  header .header > .title-wrapper {
+    justify-self: start;
+  }
+  header .header > .right-group {
+    justify-self: end;
+  }
+}

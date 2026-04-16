@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/gatesuite/mcpgate/compare/v0.2.1...v0.3.0) (2026-04-16)
+
+
+### Features
+
+* **deploy:** add docker-compose deployment files and fix helm image repo ([3f03be0](https://github.com/gatesuite/mcpgate/commit/3f03be048764679cb2d7ae5528551be9fcb96427))
+
 ## [0.2.1](https://github.com/gatesuite/mcpgate/compare/v0.2.0...v0.2.1) (2026-04-16)
 
 

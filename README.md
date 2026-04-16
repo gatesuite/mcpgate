@@ -8,7 +8,7 @@ An ultra-fast, open-source API Key lifecycle and verification microservice. Buil
 
 ## Why MCPGate?
 
-As AI agents (like Claude Desktop, Cursor, etc.) increasingly connect to remote SaaS applications via the Model Context Protocol, developers need a way to issue secure, scoped API keys to their users. 
+As AI agents (like Claude Desktop, Cursor, etc.) increasingly connect to remote SaaS applications via the Model Context Protocol, developers need a way to issue secure, scoped API keys to their users.
 
 **MCPGate** sits alongside your existing authentication provider (Auth0, Clerk, Firebase, or AuthGate). While your existing provider handles *Human OAuth*, MCPGate handles *Machine Authorization*.
 
@@ -32,7 +32,7 @@ curl http://localhost:8001/health
 
 ## API Reference
 
-All administrative endpoints require the `Authorization: Bearer <ADMIN_API_KEY>` header. 
+All administrative endpoints require the `Authorization: Bearer <ADMIN_API_KEY>` header.
 This key is configured via the `ADMIN_API_KEY` environment variable.
 
 ### 1. Create a Key

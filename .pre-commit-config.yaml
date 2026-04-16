@@ -16,6 +16,7 @@ repos:
     hooks:
       - id: check-yaml
         args: ['--allow-multiple-documents']
+        exclude: '^deployments/helm/'
 
   # ── JSON ───────────────────────────────────────────────────────────────────
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -35,12 +36,13 @@ repos:
     rev: 6.0.1
     hooks:
       - id: isort
+        args: ['--profile', 'black']
 
   - repo: https://github.com/pycqa/flake8
     rev: 7.2.0
     hooks:
       - id: flake8
-        args: ['--max-line-length=120']
+        args: ['--max-line-length=120', '--extend-ignore=E203']
 
   # ── Secrets ────────────────────────────────────────────────────────────────
   - repo: local

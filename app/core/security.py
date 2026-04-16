@@ -1,11 +1,13 @@
-import secrets
 import hashlib
+import secrets
+
 import bcrypt
 
 
 def _prehash(key: str) -> str:
     """Pre-hash with SHA256 to ensure the length is always 64 chars."""
-    return hashlib.sha256(key.encode('utf-8')).hexdigest()
+    return hashlib.sha256(key.encode("utf-8")).hexdigest()
+
 
 def generate_api_key(prefix: str = "mcp_sk_") -> tuple[str, str, str]:
     """
@@ -14,20 +16,24 @@ def generate_api_key(prefix: str = "mcp_sk_") -> tuple[str, str, str]:
     Format: mcp_sk_<public_id>_<secret>
     Returns: (plain_text_key, hashed_key, public_id)
     """
-    public_id = secrets.token_urlsafe(8)  # ~11 chars
-    secret = secrets.token_urlsafe(32)    # ~43 chars
-    
+    public_id = secrets.token_hex(8)  # 16 hex chars, no underscores
+    secret = secrets.token_hex(32)  # 64 hex chars, no underscores
+
     plain_text_key = f"{prefix}{public_id}_{secret}"
 
     salt = bcrypt.gensalt()
-    hashed_key_bytes = bcrypt.hashpw(plain_text_key.encode('utf-8'), salt)
-    hashed_key = hashed_key_bytes.decode('utf-8')
+    hashed_key_bytes = bcrypt.hashpw(_prehash(plain_text_key).encode("utf-8"), salt)
+    hashed_key = hashed_key_bytes.decode("utf-8")
 
     return plain_text_key, hashed_key, public_id
 
+
 def verify_api_key(plain_text_key: str, hashed_key: str) -> bool:
     """Verify a plain text key against a bcrypt hash."""
-    return bcrypt.checkpw(plain_text_key.encode('utf-8'), hashed_key.encode('utf-8'))
+    return bcrypt.checkpw(
+        _prehash(plain_text_key).encode("utf-8"), hashed_key.encode("utf-8")
+    )
+
 
 def get_prefix_display(plain_text_key: str) -> str:
     """
@@ -39,5 +45,5 @@ def get_prefix_display(plain_text_key: str) -> str:
         prefix_part = "_".join(parts[:-1]) + "_"
         secret_part = parts[-1]
         return f"{prefix_part}...{secret_part[-4:]}"
-    
+
     return f"...{plain_text_key[-4:]}"

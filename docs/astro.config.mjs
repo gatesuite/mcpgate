@@ -55,6 +55,12 @@ export default defineConfig({
             { label: 'Security', slug: 'security' },
           ],
         },
+        {
+          label: 'Contributing',
+          items: [
+            { label: 'Contributing', slug: 'contributing' },
+          ],
+        },
       ],
     }),
   ],
